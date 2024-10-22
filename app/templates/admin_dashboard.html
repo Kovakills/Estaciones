@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido, {{ username }}!</h1>
+        <p>Este es tu panel de administrador.</p>
+
+        <ul>
+            <li><a href="{{ url_for('estacion_routes.agregar_estacion') }}">Agregar Estación</a></li>
+            <li><a href="{{ url_for('estacion_routes.listar_estaciones') }}">Ver Estaciones</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+        </ul>
+    </div>
+</body>
+</html>

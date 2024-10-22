@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Estaciones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Estaciones</h1>
+
+        <!-- Botón para agregar nueva estación -->
+        <div class="add-button">
+            <a href="{{ url_for('estacion_routes.agregar_estacion') }}" class="btn btn-primary">Agregar Nueva Estación</a>
+        </div>
+
+        <!-- Tabla para mostrar todas las estaciones -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estacion in estaciones %}
+                <tr>
+                    <td>{{ estacion.id }}</td>
+                    <td>{{ estacion.nombre }}</td>
+                    <td>{{ estacion.ubicacion }}</td>
+                    <td>{{ estacion.estado }}</td>
+                    <td>{{ estacion.observaciones }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No hay estaciones agregadas aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
