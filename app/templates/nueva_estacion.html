@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ estacion.nombre if estacion else "Nueva Estación" }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ecf0f1;
+            color: #333;
+            padding: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{ estacion.nombre if estacion else "Agregar Nueva Estación" }}</h1>
+    <form method="POST" action="{{ url_for('estacion.nueva_estacion', station_id=estacion.id if estacion else '') }}">
+        <label for="nombre">Nombre</label>
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre" value="{{ estacion.nombre if estacion else '' }}" required>
+        
+        <label for="lugar">Ubicación</label>
+        <input type="text" name="lugar" id="lugar" placeholder="Ubicación" value="{{ estacion.lugar if estacion else '' }}" required>
+        
+        <label for="observaciones">Observaciones</label>
+        <textarea name="observaciones" id="observaciones" placeholder="Observaciones">{{ estacion.observaciones if estacion else '' }}</textarea>
+        
+        <label for="informacion_planta">Información de Planta</label>
+        <input type="text" name="informacion_planta" id="informacion_planta" placeholder="Información de Planta" value="{{ estacion.informacion_planta if estacion else '' }}">
+        
+        <label for="informacion_equipos">Información de Equipos</label>
+        <input type="text" name="informacion_equipos" id="informacion_equipos" placeholder="Información de Equipos" value="{{ estacion.informacion_equipos if estacion else '' }}">
+        
+        <label for="coordenadas">Coordenadas</label>
+        <input type="text" name="coordenadas" id="coordenadas" placeholder="Coordenadas" value="{{ estacion.coordenadas if estacion else '' }}">
+        
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+
+</html>

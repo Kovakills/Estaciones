@@ -3,22 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Dashboard del Trabajador</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        p {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-item {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dashboard-item:hover {
+            background-color: #3a7bc8;
+        }
+
+        .dashboard-item i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stations-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 1rem;
+            padding: 0.75rem;
+            background-color: var(--success-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .stations-button:hover {
+            background-color: #27ae60;
+        }
+
+        .logout-button {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 0.75rem;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .dashboard-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-item, .stations-button, .logout-button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Bienvenido, {{ current_user.username }}!</h1>
-        <p>Este es tu panel de control.</p>
+        <p>Este es tu panel de control de trabajador.</p>
+
+        <div class="dashboard-menu">
+            <a href="#" class="dashboard-item">
+                <i>📋</i>
+                Mis Tareas
+            </a>
+            <a href="#" class="dashboard-item">
+                <i>📅</i>
+                Horario
+            </a>
+            <a href="#" class="dashboard-item">
+                <i>📊</i>
+                Reportes
+            </a>
+            <a href="#" class="dashboard-item">
+                <i>👤</i>
+                Mi Perfil
+            </a>
+            <a href="#" class="dashboard-item">
+                <i>⚙️</i>
+                Configuración
+            </a>
+            <a href="#" class="dashboard-item">
+                <i>📞</i>
+                Soporte
+            </a>
+        </div>
+
+        <a href="{{ url_for('estacion.nueva_estacion') }}" class="stations-button">Ver Estaciones</a>
 
         {% if current_user.role == 'admin' %}
-        <ul>
-            <li><a href="{{ url_for('admin.admin_dashboard') }}">Panel de Admin</a></li>
-        </ul>
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="dashboard-item" style="background-color: var(--accent-color);">
+            <i>🔐</i>
+            Panel de Admin
+        </a>
         {% endif %}
-        <ul>
-            <li><a href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
-        </ul>
+
+        <a href="{{ url_for('auth.logout') }}" class="logout-button">Cerrar sesión</a>
     </div>
 </body>
 </html>

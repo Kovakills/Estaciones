@@ -7,6 +7,10 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/', methods=['GET', 'POST'])
 def login():
+    # Cerrar sesión automáticamente si ya había un usuario autenticado
+    if current_user.is_authenticated:
+        logout_user()  # Forzar logout al cargar la página de login
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -22,19 +26,13 @@ def login():
                 return redirect(url_for('auth.dashboard'))
         flash('Credenciales inválidas. Inténtalo de nuevo.', 'danger')
     
-    if current_user.is_authenticated:
-        # Redirigir según el rol del usuario ya autenticado
-        if current_user.role == 'admin':
-            return redirect(url_for('admin.admin_dashboard'))
-        else:
-            return redirect(url_for('auth.dashboard'))
-    
     return render_template("login.html")
 
 @auth_bp.route('/dashboard')
 @login_required
 def dashboard():
-    return f'Bienvenido, {current_user.username}! Este es tu panel de trabajador.'
+    return render_template('dashboard.html', username=current_user.username)
+
 
 @auth_bp.route('/logout')
 @login_required
@@ -43,15 +41,12 @@ def logout():
     flash('Has cerrado sesión.', 'info')
     return redirect(url_for('auth.login'))
 
-
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
-        # Verificar que no se permita registrar un administrador
-        role = 'worker'
+        role = request.form['role']  # Obtiene el rol desde el formulario
         
         new_user = Usuario(username=username, password=password, role=role)
         db.session.add(new_user)
@@ -61,3 +56,4 @@ def register():
         return redirect(url_for('auth.login'))
     
     return render_template('register.html')
+
