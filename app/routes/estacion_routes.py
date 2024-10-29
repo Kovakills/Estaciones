@@ -38,10 +38,9 @@ def agregar_estacion():
     flash('Estación agregada exitosamente', 'success')
     return redirect(url_for('auth.dashboard'))
 
+# Ruta para listar todas las estaciones
 @estacion_routes.route('/estaciones')
 @login_required
 def listar_estaciones():
-    # Obtiene todas las estaciones de la base de datos
     estaciones = Estacion.query.all()
-    # Renderiza el template y pasa las estaciones a la vista
     return render_template('estaciones_list.html', estaciones=estaciones)
