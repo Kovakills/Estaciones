@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,20 @@
             --text-color: #333;
             --accent-color: #e74c3c;
             --success-color: #2ecc71;
+            --background-color: #ffffff;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-color: #ddd;
+        }
+
+        html[data-theme="dark"] {
+            --primary-color: #3a7bc8;
+            --secondary-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --accent-color: #c0392b;
+            --success-color: #27ae60;
+            --background-color: #2c2c2c;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --border-color: #444;
         }
 
         body {
@@ -22,15 +36,18 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
-            background-color: #ffffff;
+            background-color: var(--background-color);
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
             padding: 2rem;
             width: 100%;
             max-width: 800px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         h1 {
@@ -137,33 +154,21 @@
         <p>Este es tu panel de control de trabajador.</p>
 
         <div class="dashboard-menu">
-            <a href="#" class="dashboard-item">
-                <i>📋</i>
-                Mis Tareas
-            </a>
-            <a href="#" class="dashboard-item">
-                <i>📅</i>
-                Horario
-            </a>
-            <a href="#" class="dashboard-item">
+            <a href="{{ url_for('trabajador.reportes') }}" class="dashboard-item">
                 <i>📊</i>
                 Reportes
             </a>
-            <a href="#" class="dashboard-item">
+            <a href="{{ url_for('trabajador.perfil') }}" class="dashboard-item">
                 <i>👤</i>
-                Mi Perfil
+                Perfil
             </a>
-            <a href="#" class="dashboard-item">
+            <a href="{{ url_for('trabajador.configuracion') }}" class="dashboard-item">
                 <i>⚙️</i>
                 Configuración
             </a>
-            <a href="#" class="dashboard-item">
-                <i>📞</i>
-                Soporte
-            </a>
+            
+            
         </div>
-
-        <a href="{{ url_for('estacion.nueva_estacion') }}" class="stations-button">Ver Estaciones</a>
 
         {% if current_user.role == 'admin' %}
         <a href="{{ url_for('admin.admin_dashboard') }}" class="dashboard-item" style="background-color: var(--accent-color);">
@@ -174,5 +179,15 @@
 
         <a href="{{ url_for('auth.logout') }}" class="logout-button">Cerrar sesión</a>
     </div>
+
+    <script>
+        // Aplicar el tema guardado al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        });
+    </script>
 </body>
 </html>

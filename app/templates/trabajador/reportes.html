@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Novedades</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --background-color: #ffffff;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-color: #ddd;
+            --input-bg: white;
+        }
+
+        html[data-theme="dark"] {
+            --primary-color: #3a7bc8;
+            --secondary-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --accent-color: #c0392b;
+            --success-color: #27ae60;
+            --warning-color: #e67e22;
+            --background-color: #2c2c2c;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --border-color: #444;
+            --input-bg: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--background-color);
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #5a6acf);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section h2 {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #3a7bc8;
+        }
+
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #ddd;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .photo-upload {
+            margin-bottom: 20px;
+        }
+
+        .photo-preview {
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            border: 2px solid var(--border-color);
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .camera-container {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #camera-feed {
+            width: 100%;
+            max-height: 300px;
+            background-color: #000;
+            border-radius: 5px;
+        }
+
+        .camera-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .severity-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .severity-option {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .severity-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+
+        .severity-option.low {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .severity-option.medium {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .severity-option.high {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .severity-options {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Reportes de Novedades</h1>
+            <p>Registra incidencias o novedades encontradas en las estaciones base</p>
+        </div>
+        
+        <div class="content">
+            <form id="report-form">
+                <div class="form-section">
+                    <h2>Información General</h2>
+                    
+                    <div class="form-group">
+                        <label for="report-type">Tipo de Novedad</label>
+                        <select id="report-type" required>
+                            <option value="">Selecciona un tipo</option>
+                            <option value="falla_equipo">Falla de Equipo</option>
+                            <option value="mantenimiento">Mantenimiento Preventivo</option>
+                            <option value="vandalismo">Vandalismo o Daño</option>
+                            <option value="interferencia">Interferencia de Señal</option>
+                            <option value="energia">Problema de Energía</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="station-name">Nombre de la Estación Base</label>
+                        <input type="text" id="station-name" placeholder="Ej: Estación Norte 03" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="report-date">Fecha de la Novedad</label>
+                        <input type="date" id="report-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nivel de Severidad</label>
+                        <div class="severity-options">
+                            <div class="severity-option low" data-value="low">
+                                <strong>Baja</strong>
+                                <p>No afecta la operación</p>
+                            </div>
+                            <div class="severity-option medium" data-value="medium">
+                                <strong>Media</strong>
+                                <p>Afecta parcialmente</p>
+                            </div>
+                            <div class="severity-option high" data-value="high">
+                                <strong>Alta</strong>
+                                <p>Afecta totalmente</p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="severity-value" required>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Detalles de la Novedad</h2>
+                    
+                    <div class="form-group">
+                        <label for="issue-description">Descripción de lo Encontrado</label>
+                        <textarea id="issue-description" rows="4" placeholder="Describe detalladamente lo que encontraste..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Evidencia Fotográfica</label>
+                        <div class="photo-actions">
+                            <button type="button" id="upload-photo-btn" class="btn">Subir Foto</button>
+                            <button type="button" id="take-photo-btn" class="btn">Tomar Foto</button>
+                        </div>
+                        <input type="file" id="photo-upload" accept="image/*" style="display: none;">
+                        
+                        <div class="camera-container" id="camera-container">
+                            <video id="camera-feed" autoplay></video>
+                            <div class="camera-buttons">
+                                <button type="button" id="capture-btn" class="btn btn-success">Capturar</button>
+                                <button type="button" id="cancel-camera-btn" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="photo-preview" id="photo-preview">
+                            <img id="preview-image" src="#" alt="Vista previa">
+                            <button type="button" id="remove-photo-btn" class="btn btn-danger" style="margin-top: 10px;">Eliminar Foto</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Comentarios Adicionales</label>
+                        <textarea id="comments" rows="3" placeholder="Añade cualquier información adicional relevante..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Enviar Reporte</button>
+                </div>
+            </form>
+            
+            
+        </div>
+    </div>
+
+    <script>
+        // Aplicar el tema guardado al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+            
+            // Establecer la fecha actual por defecto
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('report-date').value = today;
+            
+            // Manejo de opciones de severidad
+            const severityOptions = document.querySelectorAll('.severity-option');
+            const severityInput = document.getElementById('severity-value');
+            
+            severityOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Quitar la clase selected de todas las opciones
+                    severityOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Añadir la clase selected a la opción clickeada
+                    this.classList.add('selected');
+                    // Actualizar el valor del input hidden
+                    severityInput.value = this.dataset.value;
+                });
+            });
+            
+            // Manejo de subida de fotos
+            const uploadBtn = document.getElementById('upload-photo-btn');
+            const fileInput = document.getElementById('photo-upload');
+            const previewContainer = document.getElementById('photo-preview');
+            const previewImage = document.getElementById('preview-image');
+            const removePhotoBtn = document.getElementById('remove-photo-btn');
+            
+            uploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            removePhotoBtn.addEventListener('click', function() {
+                previewImage.src = '#';
+                previewContainer.style.display = 'none';
+                fileInput.value = '';
+            });
+            
+            // Manejo de la cámara
+            const takePhotoBtn = document.getElementById('take-photo-btn');
+            const cameraContainer = document.getElementById('camera-container');
+            const cameraFeed = document.getElementById('camera-feed');
+            const captureBtn = document.getElementById('capture-btn');
+            const cancelCameraBtn = document.getElementById('cancel-camera-btn');
+            
+            let stream = null;
+            
+            takePhotoBtn.addEventListener('click', async function() {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    cameraFeed.srcObject = stream;
+                    cameraContainer.style.display = 'block';
+                } catch (err) {
+                    console.error('Error al acceder a la cámara: ', err);
+                    alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+                }
+            });
+            
+            captureBtn.addEventListener('click', function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = cameraFeed.videoWidth;
+                canvas.height = cameraFeed.videoHeight;
+                canvas.getContext('2d').drawImage(cameraFeed, 0, 0);
+                
+                previewImage.src = canvas.toDataURL('image/png');
+                previewContainer.style.display = 'block';
+                
+                // Detener la cámara
+                stopCamera();
+            });
+            
+            cancelCameraBtn.addEventListener('click', function() {
+                stopCamera();
+            });
+            
+            function stopCamera() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+                cameraContainer.style.display = 'none';
+            }
+            
+            // Manejo del formulario
+            const reportForm = document.getElementById('report-form');
+            const cancelBtn = document.getElementById('cancel-btn');
+            
+            reportForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validar que se haya seleccionado una severidad
+                if (!severityInput.value) {
+                    alert('Por favor, selecciona un nivel de severidad.');
+                    return;
+                }
+                
+                // Aquí iría el código para enviar el reporte al servidor
+                // Por ahora, solo mostraremos un mensaje de éxito
+                alert('Reporte enviado correctamente.');
+                
+                // Resetear el formulario
+                reportForm.reset();
+                previewImage.src = '#';
+                previewContainer.style.display = 'none';
+                severityOptions.forEach(opt => opt.classList.remove('selected'));
+                severityInput.value = '';
+                
+                // Establecer la fecha actual nuevamente
+                document.getElementById('report-date').value = today;
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('¿Estás seguro de que deseas cancelar? Se perderán los datos ingresados.')) {
+                    window.location.href = "{{ url_for('auth.dashboard') }}";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
