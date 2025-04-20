@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estaciones Base</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --background-color: #ffffff;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-color: #ddd;
+            --input-bg: white;
+            --card-bg: white;
+            --status-active: #27ae60;
+            --status-maintenance: #f39c12;
+            --status-offline: #e74c3c;
+            --status-active-bg: rgba(39, 174, 96, 0.1);
+            --status-maintenance-bg: rgba(243, 156, 18, 0.1);
+            --status-offline-bg: rgba(231, 76, 60, 0.1);
+        }
+
+        html[data-theme="dark"] {
+            --primary-color: #3a7bc8;
+            --secondary-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --accent-color: #c0392b;
+            --success-color: #27ae60;
+            --warning-color: #e67e22;
+            --background-color: #2c2c2c;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --border-color: #444;
+            --input-bg: #333;
+            --card-bg: #222;
+            --status-active-bg: rgba(39, 174, 96, 0.2);
+            --status-maintenance-bg: rgba(243, 156, 18, 0.2);
+            --status-offline-bg: rgba(231, 76, 60, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #5a6acf);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .search-filter {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .station-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .station-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .station-image {
+            height: 180px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .station-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background-color: var(--status-active-bg);
+            color: var(--status-active);
+            border: 1px solid var(--status-active);
+        }
+
+        .status-maintenance {
+            background-color: var(--status-maintenance-bg);
+            color: var(--status-maintenance);
+            border: 1px solid var(--status-maintenance);
+        }
+
+        .status-offline {
+            background-color: var(--status-offline-bg);
+            color: var(--status-offline);
+            border: 1px solid var(--status-offline);
+        }
+
+        .station-info {
+            padding: 15px;
+        }
+
+        .station-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .station-location {
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .station-location svg {
+            margin-right: 5px;
+            fill: var(--text-color);
+        }
+
+        .station-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .station-detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            margin-top: 3px;
+        }
+
+        /* Modal para detalles de estación */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 50px auto;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+            background: none;
+            border: none;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .station-gallery {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .gallery-image {
+            width: 150px;
+            height: 100px;
+            border-radius: 5px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        .info-section h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .equipment-list {
+            list-style: none;
+        }
+
+        .equipment-item {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .equipment-name {
+            font-weight: 500;
+        }
+
+        .equipment-status {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a7bc8;
+        }
+
+        .btn-secondary {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+
+        .page-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .page-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .stations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-options {
+                justify-content: center;
+            }
+            
+            .modal-content {
+                margin: 20px auto;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Estaciones Base</h1>
+            <p>Visualiza y gestiona todas las torres de telecomunicaciones</p>
+        </div>
+        
+        <div class="search-filter">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Buscar estación por nombre o ubicación...">
+            </div>
+            <div class="filter-options">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="active">Activas</button>
+                <button class="filter-btn" data-filter="maintenance">En Mantenimiento</button>
+                <button class="filter-btn" data-filter="offline">Fuera de Servicio</button>
+            </div>
+        </div>
+        
+        <div class="stations-grid" id="stations-container">
+            <!-- Las estaciones se cargarán dinámicamente aquí -->
+        </div>
+        
+        <div class="pagination">
+            <div class="page-item active">1</div>
+            <div class="page-item">2</div>
+            <div class="page-item">3</div>
+            <div class="page-item">4</div>
+            <div class="page-item">5</div>
+        </div>
+        
+        <a href="{{ url_for('trabajador.dashboard') }}" class="back-link">Volver al Dashboard</a>
+    </div>
+    
+    <!-- Modal para detalles de estación -->
+    <div class="modal" id="station-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-station-name">Nombre de la Estación</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="station-gallery" id="station-gallery">
+                    <!-- Las imágenes se cargarán dinámicamente aquí -->
+                </div>
+                
+                <div class="info-section">
+                    <h3>Información General</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">ID de Estación</div>
+                            <div class="info-value" id="station-id">EST-001</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Ubicación</div>
+                            <div class="info-value" id="station-location">Bogotá, Colombia</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Coordenadas</div>
+                            <div class="info-value" id="station-coordinates">4.6097,-74.0817</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Estado</div>
+                            <div class="info-value" id="station-status">Activa</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Tipo de Torre</div>
+                            <div class="info-value" id="tower-type">Autosoportada</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Altura</div>
+                            <div class="info-value" id="tower-height">45 metros</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Fecha de Instalación</div>
+                            <div class="info-value" id="installation-date">15/03/2018</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Último Mantenimiento</div>
+                            <div class="info-value" id="last-maintenance">10/05/2023</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Equipos de Conexión</h3>
+                    <ul class="equipment-list" id="connection-equipment">
+                        <!-- Los equipos se cargarán dinámicamente aquí -->
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Plantas Eléctricas</h3>
+                    <ul class="equipment-list" id="power-equipment">
+                        <!-- Las plantas eléctricas se cargarán dinámicamente aquí -->
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Historial de Novedades</h3>
+                    <ul class="equipment-list" id="issues-history">
+                        <!-- El historial se cargará dinámicamente aquí -->
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="close-modal-btn">Cerrar</button>
+                <div>
+                    <button class="btn btn-warning" id="report-issue-btn">Reportar Novedad</button>
+                    <button class="btn btn-primary" id="schedule-maintenance-btn">Programar Mantenimiento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Aplicar el tema guardado al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+            
+            // Datos de ejemplo para las estaciones
+            const stationsData = [
+                {
+                    id: "EST-001",
+                    name: "Torre Norte Bogotá",
+                    location: "Bogotá, Colombia",
+                    coordinates: "4.6097,-74.0817",
+                    status: "active",
+                    type: "Autosoportada",
+                    height: "45 metros",
+                    installationDate: "15/03/2018",
+                    lastMaintenance: "10/05/2023",
+                    image: "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                    antennas: 8,
+                    coverage: "15 km",
+                    connectionEquipment: [
+                        { name: "Router Cisco ASR-9010", status: "active" },
+                        { name: "Switch Cisco Catalyst 9300", status: "active" },
+                        { name: "Antena Sectorial 4G LTE", status: "active" },
+                        { name: "Antena Microondas 23 GHz", status: "active" }
+                    ],
+                    powerEquipment: [
+                        { name: "Generador Diesel 50 kVA", status: "active" },
+                        { name: "Banco de Baterías 48V", status: "active" },
+                        { name: "Sistema de Respaldo UPS 10 kVA", status: "maintenance" }
+                    ],
+                    issuesHistory: [
+                        { date: "05/05/2023", description: "Mantenimiento preventivo", status: "resolved" },
+                        { date: "20/02/2023", description: "Falla en sistema de refrigeración", status: "resolved" }
+                    ],
+                    gallery: [
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg"
+                    ]
+                },
+                {
+                    id: "EST-002",
+                    name: "Torre Central Medellín",
+                    location: "Medellín, Colombia",
+                    coordinates: "6.2476,-75.5658",
+                    status: "maintenance",
+                    type: "Monopolo",
+                    height: "30 metros",
+                    installationDate: "22/07/2019",
+                    lastMaintenance: "15/06/2023",
+                    image: "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                    antennas: 6,
+                    coverage: "12 km",
+                    connectionEquipment: [
+                        { name: "Router Huawei NE40E", status: "active" },
+                        { name: "Switch Huawei S6720", status: "maintenance" },
+                        { name: "Antena Sectorial 5G", status: "active" }
+                    ],
+                    powerEquipment: [
+                        { name: "Generador Diesel 30 kVA", status: "maintenance" },
+                        { name: "Banco de Baterías 24V", status: "active" }
+                    ],
+                    issuesHistory: [
+                        { date: "15/06/2023", description: "Mantenimiento programado del generador", status: "in-progress" },
+                        { date: "10/04/2023", description: "Actualización de firmware", status: "resolved" }
+                    ],
+                    gallery: [
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg"
+                    ]
+                },
+                {
+                    id: "EST-003",
+                    name: "Torre Sur Cali",
+                    location: "Cali, Colombia",
+                    coordinates: "3.4516,-76.5320",
+                    status: "offline",
+                    type: "Arriostrada",
+                    height: "35 metros",
+                    installationDate: "05/11/2017",
+                    lastMaintenance: "20/04/2023",
+                    image: "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                    antennas: 4,
+                    coverage: "10 km",
+                    connectionEquipment: [
+                        { name: "Router Juniper MX480", status: "offline" },
+                        { name: "Switch Juniper EX4300", status: "offline" },
+                        { name: "Antena Sectorial 3G/4G", status: "offline" }
+                    ],
+                    powerEquipment: [
+                        { name: "Generador Diesel 40 kVA", status: "offline" },
+                        { name: "Sistema de Respaldo UPS 5 kVA", status: "offline" }
+                    ],
+                    issuesHistory: [
+                        { date: "25/06/2023", description: "Falla eléctrica general", status: "pending" },
+                        { date: "20/04/2023", description: "Mantenimiento preventivo", status: "resolved" },
+                        { date: "15/02/2023", description: "Reemplazo de cables dañados", status: "resolved" }
+                    ],
+                    gallery: [
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg"
+                    ]
+                },
+                {
+                    id: "EST-004",
+                    name: "Torre Este Barranquilla",
+                    location: "Barranquilla, Colombia",
+                    coordinates: "10.9639,-74.7964",
+                    status: "active",
+                    type: "Autosoportada",
+                    height: "40 metros",
+                    installationDate: "18/09/2020",
+                    lastMaintenance: "05/07/2023",
+                    image: "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                    antennas: 10,
+                    coverage: "18 km",
+                    connectionEquipment: [
+                        { name: "Router Cisco ASR-1001", status: "active" },
+                        { name: "Switch Cisco Nexus 9300", status: "active" },
+                        { name: "Antena Sectorial 4G/5G", status: "active" },
+                        { name: "Antena Microondas 38 GHz", status: "active" }
+                    ],
+                    powerEquipment: [
+                        { name: "Generador Diesel 60 kVA", status: "active" },
+                        { name: "Banco de Baterías 48V", status: "active" },
+                        { name: "Sistema de Respaldo UPS 15 kVA", status: "active" }
+                    ],
+                    issuesHistory: [
+                        { date: "05/07/2023", description: "Mantenimiento preventivo", status: "resolved" },
+                        { date: "10/03/2023", description: "Actualización de equipos", status: "resolved" }
+                    ],
+                    gallery: [
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg"
+                    ]
+                },
+                {
+                    id: "EST-005",
+                    name: "Torre Oeste Bucaramanga",
+                    location: "Bucaramanga, Colombia",
+                    coordinates: "7.1254,-73.1198",
+                    status: "active",
+                    type: "Monopolo",
+                    height: "25 metros",
+                    installationDate: "30/01/2021",
+                    lastMaintenance: "12/06/2023",
+                    image: "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                    antennas: 5,
+                    coverage: "8 km",
+                    connectionEquipment: [
+                        { name: "Router Huawei NE20E", status: "active" },
+                        { name: "Switch Huawei S5700", status: "active" },
+                        { name: "Antena Sectorial 4G", status: "active" }
+                    ],
+                    powerEquipment: [
+                        { name: "Generador Diesel 25 kVA", status: "active" },
+                        { name: "Banco de Baterías 24V", status: "active" }
+                    ],
+                    issuesHistory: [
+                        { date: "12/06/2023", description: "Mantenimiento preventivo", status: "resolved" },
+                        { date: "25/02/2023", description: "Reemplazo de antena dañada", status: "resolved" }
+                    ],
+                    gallery: [
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg"
+                    ]
+                },
+                {
+                    id: "EST-006",
+                    name: "Torre Central Cartagena",
+                    location: "Cartagena, Colombia",
+                    coordinates: "10.3932,-75.4832",
+                    status: "maintenance",
+                    type: "Autosoportada",
+                    height: "38 metros",
+                    installationDate: "12/05/2019",
+                    lastMaintenance: "18/06/2023",
+                    image: "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                    antennas: 7,
+                    coverage: "14 km",
+                    connectionEquipment: [
+                        { name: "Router Cisco ASR-920", status: "active" },
+                        { name: "Switch Cisco Catalyst 3850", status: "maintenance" },
+                        { name: "Antena Sectorial 4G/5G", status: "active" }
+                    ],
+                    powerEquipment: [
+                        { name: "Generador Diesel 45 kVA", status: "maintenance" },
+                        { name: "Banco de Baterías 48V", status: "active" }
+                    ],
+                    issuesHistory: [
+                        { date: "18/06/2023", description: "Mantenimiento programado", status: "in-progress" },
+                        { date: "05/03/2023", description: "Falla en sistema de refrigeración", status: "resolved" }
+                    ],
+                    gallery: [
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg",
+                        "https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1551294243928-Imagen.jpg",
+                        "https://www.eltiempo.com/files/image_640_428/uploads/2022/10/18/634eb8a7e6a88.jpeg"
+                    ]
+                }
+            ];
+            
+            // Función para renderizar las estaciones
+            function renderStations(stations) {
+                const stationsContainer = document.getElementById('stations-container');
+                stationsContainer.innerHTML = '';
+                
+                stations.forEach(station => {
+                    const statusClass = station.status === 'active' ? 'status-active' : 
+                                        station.status === 'maintenance' ? 'status-maintenance' : 'status-offline';
+                    const statusText = station.status === 'active' ? 'Activa' : 
+                                      station.status === 'maintenance' ? 'En Mantenimiento' : 'Fuera de Servicio';
+                    
+                    const stationCard = document.createElement('div');
+                    stationCard.className = 'station-card';
+                    stationCard.dataset.id = station.id;
+                    stationCard.dataset.status = station.status;
+                    
+                    stationCard.innerHTML = `
+                        <div class="station-image" style="background-image: url('${station.image}')">
+                            <div class="station-status ${statusClass}">${statusText}</div>
+                        </div>
+                        <div class="station-info">
+                            <div class="station-name">${station.name}</div>
+                            <div class="station-location">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                ${station.location}
+                            </div>
+                            <div class="station-details">
+                                <div class="station-detail">
+                                    <span>Antenas</span>
+                                    <span class="detail-value">${station.antennas}</span>
+                                </div>
+                                <div class="station-detail">
+                                    <span>Cobertura</span>
+                                    <span class="detail-value">${station.coverage}</span>
+                                </div>
+                                <div class="station-detail">
+                                    <span>Altura</span>
+                                    <span class="detail-value">${station.height}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    stationsContainer.appendChild(stationCard);
+                    
+                    // Añadir evento de clic para mostrar detalles
+                    stationCard.addEventListener('click', function() {
+                        showStationDetails(station);
+                    });
+                });
+            }
+            
+            // Renderizar estaciones iniciales
+            renderStations(stationsData);
+            
+            // Filtrar estaciones
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Quitar clase active de todos los botones
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Añadir clase active al botón clickeado
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    let filteredStations;
+                    
+                    if (filter === 'all') {
+                        filteredStations = stationsData;
+                    } else {
+                        filteredStations = stationsData.filter(station => station.status === filter);
+                    }
+                    
+                    renderStations(filteredStations);
+                });
+            });
+            
+            // Buscar estaciones
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                if (searchTerm.trim() === '') {
+                    renderStations(stationsData);
+                    return;
+                }
+                
+                const filteredStations = stationsData.filter(station => 
+                    station.name.toLowerCase().includes(searchTerm) || 
+                    station.location.toLowerCase().includes(searchTerm)
+                );
+                
+                renderStations(filteredStations);
+            });
+            
+            // Mostrar detalles de estación
+            function showStationDetails(station) {
+                const modal = document.getElementById('station-modal');
+                const modalTitle = document.getElementById('modal-station-name');
+                const stationId = document.getElementById('station-id');
+                const stationLocation = document.getElementById('station-location');
+                const stationCoordinates = document.getElementById('station-coordinates');
+                const stationStatus = document.getElementById('station-status');
+                const towerType = document.getElementById('tower-type');
+                const towerHeight = document.getElementById('tower-height');
+                const installationDate = document.getElementById('installation-date');
+                const lastMaintenance = document.getElementById('last-maintenance');
+                const connectionEquipment = document.getElementById('connection-equipment');
+                const powerEquipment = document.getElementById('power-equipment');
+                const issuesHistory = document.getElementById('issues-history');
+                const galleryContainer = document.getElementById('station-gallery');
+                
+                // Llenar información general
+                modalTitle.textContent = station.name;
+                stationId.textContent = station.id;
+                stationLocation.textContent = station.location;
+                stationCoordinates.textContent = station.coordinates;
+                
+                const statusText = station.status === 'active' ? 'Activa' : 
+                                  station.status === 'maintenance' ? 'En Mantenimiento' : 'Fuera de Servicio';
+                stationStatus.textContent = statusText;
+                
+                towerType.textContent = station.type;
+                towerHeight.textContent = station.height;
+                installationDate.textContent = station.installationDate;
+                lastMaintenance.textContent = station.lastMaintenance;
+                
+                // Llenar equipos de conexión
+                connectionEquipment.innerHTML = '';
+                station.connectionEquipment.forEach(equipment => {
+                    const statusClass = equipment.status === 'active' ? 'status-active' : 
+                                       equipment.status === 'maintenance' ? 'status-maintenance' : 'status-offline';
+                    const statusText = equipment.status === 'active' ? 'Activo' : 
+                                      equipment.status === 'maintenance' ? 'En Mantenimiento' : 'Fuera de Servicio';
+                    
+                    const li = document.createElement('li');
+                    li.className = 'equipment-item';
+                    li.innerHTML = `
+                        <span class="equipment-name">${equipment.name}</span>
+                        <span class="equipment-status ${statusClass}">${statusText}</span>
+                    `;
+                    connectionEquipment.appendChild(li);
+                });
+                
+                // Llenar plantas eléctricas
+                powerEquipment.innerHTML = '';
+                station.powerEquipment.forEach(equipment => {
+                    const statusClass = equipment.status === 'active' ? 'status-active' : 
+                                       equipment.status === 'maintenance' ? 'status-maintenance' : 'status-offline';
+                    const statusText = equipment.status === 'active' ? 'Activo' : 
+                                      equipment.status === 'maintenance' ? 'En Mantenimiento' : 'Fuera de Servicio';
+                    
+                    const li = document.createElement('li');
+                    li.className = 'equipment-item';
+                    li.innerHTML = `
+                        <span class="equipment-name">${equipment.name}</span>
+                        <span class="equipment-status ${statusClass}">${statusText}</span>
+                    `;
+                    powerEquipment.appendChild(li);
+                });
+                
+                // Llenar historial de novedades
+                issuesHistory.innerHTML = '';
+                station.issuesHistory.forEach(issue => {
+                    const statusClass = issue.status === 'resolved' ? 'status-active' : 
+                                       issue.status === 'in-progress' ? 'status-maintenance' : 'status-offline';
+                    const statusText = issue.status === 'resolved' ? 'Resuelto' : 
+                                      issue.status === 'in-progress' ? 'En Progreso' : 'Pendiente';
+                    
+                    const li = document.createElement('li');
+                    li.className = 'equipment-item';
+                    li.innerHTML = `
+                        <div>
+                            <strong>${issue.date}</strong>: ${issue.description}
+                        </div>
+                        <span class="equipment-status ${statusClass}">${statusText}</span>
+                    `;
+                    issuesHistory.appendChild(li);
+                });
+                
+                // Llenar galería de imágenes
+                galleryContainer.innerHTML = '';
+                station.gallery.forEach(image => {
+                    const img = document.createElement('img');
+                    img.className = 'gallery-image';
+                    img.src = image;
+                    img.alt = 'Imagen de la estación';
+                    galleryContainer.appendChild(img);
+                });
+                
+                // Mostrar modal
+                modal.style.display = 'block';
+                
+                // Eventos para cerrar el modal
+                const closeBtn = document.querySelector('.close-modal');
+                const closeModalBtn = document.getElementById('close-modal-btn');
+                
+                closeBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+                
+                closeModalBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+                
+                // Cerrar modal al hacer clic fuera del contenido
+                window.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+                
+                // Botones de acción
+                const reportIssueBtn = document.getElementById('report-issue-btn');
+                reportIssueBtn.addEventListener('click', function() {
+                    window.location.href = "{{ url_for('trabajador.reportes') }}?station=" + station.id;
+                });
+                
+                const scheduleMaintBtn = document.getElementById('schedule-maintenance-btn');
+                scheduleMaintBtn.addEventListener('click', function() {
+                    alert('Funcionalidad de programar mantenimiento en desarrollo');
+                });
+            }
+            
+            // Paginación (solo para demostración)
+            const pageItems = document.querySelectorAll('.page-item');
+            pageItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    pageItems.forEach(pi => pi.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

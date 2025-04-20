@@ -21,7 +21,7 @@ def perfil():
 def configuracion():
     return render_template('trabajador/configuracion.html', username=current_user.username)
 
-@trabajador_bp.route('/estaciones')
+@trabajador_bp.route('/EB')
 @login_required
-def estaciones():
-    return render_template('estaciones.html', username=current_user.username)
+def EB():
+    return render_template('trabajador/EB.html', username=current_user.username)

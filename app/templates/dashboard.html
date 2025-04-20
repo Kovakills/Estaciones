@@ -151,7 +151,7 @@
 <body>
     <div class="container">
         <h1>Bienvenido, {{ current_user.username }}!</h1>
-        <p>Este es tu panel de control de trabajador.</p>
+        <p>Este es tu panel de trabajador.</p>
 
         <div class="dashboard-menu">
             <a href="{{ url_for('trabajador.reportes') }}" class="dashboard-item">
@@ -166,9 +166,12 @@
                 <i>⚙️</i>
                 Configuración
             </a>
-            
-            
+            <a href="{{ url_for('trabajador.EB') }}" class="dashboard-item">
+                <i>🚉</i>
+                Estaciones
+            </a>
         </div>
+        
 
         {% if current_user.role == 'admin' %}
         <a href="{{ url_for('admin.admin_dashboard') }}" class="dashboard-item" style="background-color: var(--accent-color);">
